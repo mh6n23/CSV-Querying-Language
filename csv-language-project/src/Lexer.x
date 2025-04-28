@@ -14,7 +14,7 @@ $digit+             {\s -> TokenInt (read s)}
 "ON"                {\s -> TokenOn}
 "σ"                 {\s -> TokenSelectionOperator}
 "REPLACE"           {\s -> TokenReplaceOperator}
-"π"                 {\s -> TokenReplaceOperator}
+"π"                 {\s -> TokenProjectionOperator}
 "("                 {\s -> TokenLeftBracket}
 ")"                 {\s -> TokenRightBracket}
 "["                 {\s -> TokenLeftSquareBracket}
@@ -53,6 +53,4 @@ $alpha [$alpha $digit \_ \']*       { \s -> TokenString s }
         TokenString s           |
         TokenJoinType String
         deriving (Eq, Show)
-
-
 }
