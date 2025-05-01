@@ -7,11 +7,11 @@ cabal-version: 2.2
 name:           csv-language-project
 version:        0.1.0.0
 description:    Alex and Happy project.
-homepage:       https://github.com/githubuser/csv-language-project#readme
-bug-reports:    https://github.com/githubuser/csv-language-project/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2025 Author name here
+homepage:       https://github.com/mh6n23/PLC-CW#readme
+bug-reports:    https://github.com/mh6n23/PLC-CW/issues
+author:         Matthew Heath
+maintainer:     mh6n23@soton.ac.uk
+copyright:      University of Southampton
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
@@ -21,11 +21,13 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/csv-language-project
+  location: https://github.com/mh6n23/PLC-CW
 
 library
   exposed-modules:
+      Lexer
       Lib
+      Parser
   other-modules:
       Paths_csv_language_project
   autogen-modules:

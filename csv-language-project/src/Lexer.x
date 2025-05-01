@@ -1,20 +1,20 @@
 {
-    module Lexer where
+module Lexer where
 }
 %wrapper "basic"
-
 $digit = 0-9
 $alpha = [a-zA-Z]
 
-tokens:-
+tokens :-
 $white+             ; -- Ignore whitespace
 "--".*              ; -- Ignore comments
 $digit+             {\s -> TokenInt (read s)}
+"csv"               {\s -> TokenCSV}
 "X"                 {\s -> TokenCartesian}
 "ON"                {\s -> TokenOn}
-"σ"                 {\s -> TokenSelectionOperator}
+"SELECT"                 {\s -> TokenSelectionOperator}
 "REPLACE"           {\s -> TokenReplaceOperator}
-"π"                 {\s -> TokenProjectionOperator}
+"PROJECT"                 {\s -> TokenProjectionOperator}
 "("                 {\s -> TokenLeftBracket}
 ")"                 {\s -> TokenRightBracket}
 "["                 {\s -> TokenLeftSquareBracket}
@@ -36,10 +36,12 @@ $alpha [$alpha $digit \_ \']*       { \s -> TokenString s }
 
 {
     data Token =
-        TokenInt Int deriving   |
+        TokenInt Int            |
+        TokenCSV                |
         TokenCartesian          |
         TokenOn                 |
         TokenReplaceOperator    |
+        TokenSelectionOperator  |
         TokenProjectionOperator |
         TokenLeftBracket        |
         TokenRightBracket       |
@@ -50,7 +52,7 @@ $alpha [$alpha $digit \_ \']*       { \s -> TokenString s }
         TokenCombinator String  |
         TokenOperator String    |
         TokenArrow              |
-        TokenString s           |
+        TokenString String      |
         TokenJoinType String
         deriving (Eq, Show)
 }
