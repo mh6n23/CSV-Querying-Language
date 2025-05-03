@@ -1,1 +1,1 @@
-(A.csv) X (B.csv)
+SELECT [A.2 == "London"] (A.csv)

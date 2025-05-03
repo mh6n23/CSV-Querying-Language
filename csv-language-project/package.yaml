@@ -19,7 +19,8 @@ description: Alex and Happy project.
 dependencies:
 - base >= 4.7 && < 5
 - array
-
+- split # added by Matt
+- MissingH # added by Matt (used for strip function)
 ghc-options:
 - -Wall
 - -Wcompat
@@ -40,7 +41,7 @@ library:
 
 executables:
   csv-language-project-exe:
-    main:        Main.hs
+    main: Interpreter.hs
     source-dirs: app
     ghc-options:
     - -threaded

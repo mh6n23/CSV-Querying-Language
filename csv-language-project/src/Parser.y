@@ -8,6 +8,7 @@ import Lexer
 %error { parseError }
 %token
     int                 { TokenInt $$ }
+    quotedstring        { TokenQuotedString $$}
     string              { TokenString $$ }
     csv                 { TokenCSV }
     cartesian           { TokenCartesian }
@@ -40,14 +41,14 @@ columnList : int { ColumnListSingle $1 }
 condition : conditionUnit { ConditionSingle $1 }
             | conditionUnit combinator condition {ConditionList $1 $2 $3}
 
-conditionUnit : column operator string { ConditionUnitValue $1 $2 $3 }
+conditionUnit : column operator quotedstring { ConditionUnitValue $1 $2 $3 }
                 | column operator column {ConditionUnitColumn $1 $2 $3}
 
 replaceList : replaceUnit { ReplaceListSingle $1 }
                 | replaceUnit comma replaceList { ReplaceListMultiple $1 $3 }
 
 replaceUnit : column arrow column { ReplaceUnitColumn $1 $3 }
-                | column arrow string { ReplaceUnitValue $1 $3 }
+                | column arrow quotedstring { ReplaceUnitValue $1 $3 }
 
 column : string dot int { ColumnRef $1 $3 }
 

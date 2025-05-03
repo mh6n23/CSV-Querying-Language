@@ -32,6 +32,7 @@ $digit+             {\s -> TokenInt (read s)}
 "NaturalJoin"       {\s -> TokenJoinType "Natural"}
 "OuterJoin"         {\s -> TokenJoinType "Outer"}
 "SemiJoin"          {\s -> TokenJoinType "Semi"}
+\"[^\"]*\"          {\s -> TokenQuotedString (init (tail s))}
 $alpha [$alpha $digit \_ \']*       { \s -> TokenString s } 
 
 {
@@ -52,6 +53,7 @@ $alpha [$alpha $digit \_ \']*       { \s -> TokenString s }
         TokenCombinator String  |
         TokenOperator String    |
         TokenArrow              |
+        TokenQuotedString String |
         TokenString String      |
         TokenJoinType String
         deriving (Eq, Show)
