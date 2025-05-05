@@ -15,6 +15,7 @@ import Lexer
     on                  { TokenOn }
     selection           { TokenSelectionOperator }
     replace             { TokenReplaceOperator }
+    where               { TokenWhere }
     projection          { TokenProjectionOperator }
     leftbracket         { TokenLeftBracket }
     rightbracket        { TokenRightBracket }
@@ -30,7 +31,7 @@ import Lexer
 %%
 operation : string dot csv {OperationFileName ($1 ++ ".csv")}
             | selection leftsquarebracket condition rightsquarebracket leftbracket operation rightbracket { OperationSelection $3 $6 }
-            | replace leftsquarebracket replaceList rightsquarebracket leftbracket operation rightbracket { OperationReplace $3 $6 }
+            | replace leftsquarebracket replaceList rightsquarebracket where leftsquarebracket condition rightsquarebracket leftbracket operation rightbracket { OperationReplace $3 $7 $10 }
             | projection leftsquarebracket columnList rightsquarebracket leftbracket operation rightbracket { OperationProject $3 $6}
             | join leftbracket operation rightbracket on leftsquarebracket condition rightsquarebracket leftbracket operation rightbracket { OperationJoin $1 $3 $7 $10 }
             | leftbracket operation rightbracket cartesian leftbracket operation rightbracket { OperationCartesian $2 $6 }
@@ -58,7 +59,7 @@ parseError _ = error "Parse error"
 
 data Operation = OperationFileName String |
                      OperationSelection Condition Operation |
-                     OperationReplace ReplaceList Operation |
+                     OperationReplace ReplaceList Condition Operation |
                      OperationProject ColumnList Operation |
                      OperationJoin String Operation Condition Operation |
                      OperationCartesian Operation Operation

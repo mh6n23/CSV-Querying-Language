@@ -14,6 +14,7 @@ $digit+             {\s -> TokenInt (read s)}
 "ON"                {\s -> TokenOn}
 "SELECT"                 {\s -> TokenSelectionOperator}
 "REPLACE"           {\s -> TokenReplaceOperator}
+"WHERE"             {\s -> TokenWhere}
 "PROJECT"                 {\s -> TokenProjectionOperator}
 "("                 {\s -> TokenLeftBracket}
 ")"                 {\s -> TokenRightBracket}
@@ -24,14 +25,15 @@ $digit+             {\s -> TokenInt (read s)}
 "AND"               {\s -> TokenCombinator "AND"}
 "OR"                {\s -> TokenCombinator "OR"}
 "=="                {\s -> TokenOperator "Equals"}
+"!="                {\s -> TokenOperator "NotEquals"}
 "<="                {\s -> TokenOperator "LessThanOrEqualTo"}
 ">="                {\s -> TokenOperator "GreaterThanOrEqualTo"}
 "<"                 {\s -> TokenOperator "LessThan"}
 ">"                 {\s -> TokenOperator "GreaterThan"}
 "->"                {\s -> TokenArrow}
 "NaturalJoin"       {\s -> TokenJoinType "Natural"}
-"OuterJoin"         {\s -> TokenJoinType "Outer"}
 "SemiJoin"          {\s -> TokenJoinType "Semi"}
+"LeftJoin"          {\s -> TokenJoinType "Left"}
 \"[^\"]*\"          {\s -> TokenQuotedString (init (tail s))}
 $alpha [$alpha $digit \_ \']*       { \s -> TokenString s } 
 
@@ -42,6 +44,7 @@ $alpha [$alpha $digit \_ \']*       { \s -> TokenString s }
         TokenCartesian          |
         TokenOn                 |
         TokenReplaceOperator    |
+        TokenWhere              |
         TokenSelectionOperator  |
         TokenProjectionOperator |
         TokenLeftBracket        |

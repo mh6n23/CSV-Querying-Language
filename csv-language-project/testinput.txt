@@ -1,1 +1,1 @@
-SELECT [A.2 == "London"] (A.csv)
+A.csv
