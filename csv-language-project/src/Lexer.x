@@ -12,10 +12,10 @@ $digit+             {\s -> TokenInt (read s)}
 "csv"               {\s -> TokenCSV}
 "X"                 {\s -> TokenCartesian}
 "ON"                {\s -> TokenOn}
-"SELECT"                 {\s -> TokenSelectionOperator}
+"SELECT"            {\s -> TokenSelectionOperator}
 "REPLACE"           {\s -> TokenReplaceOperator}
 "WHERE"             {\s -> TokenWhere}
-"PROJECT"                 {\s -> TokenProjectionOperator}
+"PROJECT"           {\s -> TokenProjectionOperator}
 "("                 {\s -> TokenLeftBracket}
 ")"                 {\s -> TokenRightBracket}
 "["                 {\s -> TokenLeftSquareBracket}
@@ -34,6 +34,7 @@ $digit+             {\s -> TokenInt (read s)}
 "NaturalJoin"       {\s -> TokenJoinType "Natural"}
 "SemiJoin"          {\s -> TokenJoinType "Semi"}
 "LeftJoin"          {\s -> TokenJoinType "Left"}
+"SAVE"              {\s -> TokenSave}
 \"[^\"]*\"          {\s -> TokenQuotedString (init (tail s))}
 $alpha [$alpha $digit \_ \']*       { \s -> TokenString s } 
 
@@ -56,8 +57,9 @@ $alpha [$alpha $digit \_ \']*       { \s -> TokenString s }
         TokenCombinator String  |
         TokenOperator String    |
         TokenArrow              |
-        TokenQuotedString String |
+        TokenQuotedString String|
         TokenString String      |
-        TokenJoinType String
+        TokenJoinType String    |
+        TokenSave
         deriving (Eq, Show)
 }
