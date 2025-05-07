@@ -18,19 +18,18 @@ eval (OperationFileName fileName) = do
                                                        let fileLines = lines fileContent
                                                        let table = map (map strip . splitOn ",") fileLines
                                                        --putStr (unlines (map (intercalate ",") (sort table)))
+                                                       (if null table then return [] else (do let arityList = map length table
+                                                                                              let firstArity = head arityList
+                                                                                              let equalArities = all (== firstArity) arityList
 
-                                                       let arityList = map length table
-                                                       let firstArity = head arityList
-                                                       let equalArities = all (== firstArity) arityList
+                                                                                              let lastLine = last fileLines
+                                                                                              let trailingNewLine = "" == lastLine
+                                                                                              let invalidTrailingNewLine = trailingNewLine && firstArity > 1
 
-                                                       let lastLine = last fileLines
-                                                       let trailingNewLine = "" == lastLine
-                                                       let invalidTrailingNewLine = trailingNewLine && firstArity > 1
-
-                                                       case (equalArities, invalidTrailingNewLine) of
-                                                        (True, False) -> return table
-                                                        (False, _) -> error ("Error: The CSV File " ++ fileName ++ " does not have the same arity on each row.")
-                                                        (_, True) -> error ("Error: The CSV File " ++ fileName ++ " has an invalid trailing new line.")) else error "Error: You entered a file name without the .csv extension")
+                                                                                              case (equalArities, invalidTrailingNewLine) of
+                                                                                                  (True, False) -> return table
+                                                                                                  (False, _) -> error ("Error: The CSV File " ++ fileName ++ " does not have the same arity on each row.")
+                                                                                                  (_, True) -> error ("Error: The CSV File " ++ fileName ++ " has an invalid trailing new line.")))) else error "Error: You entered a file name without the .csv extension")
 
 eval (OperationSelection conditionList operation) = do
                                 table <- eval operation
