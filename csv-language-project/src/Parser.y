@@ -28,6 +28,8 @@ import Lexer
     arrow               { TokenArrow}
     join                { TokenJoinType $$}
     save                { TokenSave }
+    union               { TokenUnion }
+    difference          { TokenDifference }
 
 %%
 operation : quotedstring {OperationFileName $1}
@@ -38,6 +40,8 @@ operation : quotedstring {OperationFileName $1}
             | join leftbracket operation rightbracket on leftsquarebracket conditionUnit rightsquarebracket leftbracket operation rightbracket { OperationJoin $1 $3 $7 $10 }
             | leftbracket operation rightbracket cartesian leftbracket operation rightbracket { OperationCartesian $2 $6 }
             | save quotedstring leftbracket operation rightbracket { OperationSave $2 $4 }
+            | leftbracket operation rightbracket union leftbracket operation rightbracket { OperationUnion $2 $6 }
+            | leftbracket operation rightbracket difference leftbracket operation rightbracket { OperationDifference $2 $6 }
 
 columnList : int { ColumnListSingle $1 }
                 | int comma columnList {ColumnListMultiple $1 $3}
@@ -64,7 +68,9 @@ data Operation = OperationFileName String |
                      OperationProject ColumnList Operation |
                      OperationJoin String Operation ConditionUnit Operation |
                      OperationCartesian Operation Operation |
-                     OperationSave String Operation
+                     OperationSave String Operation |
+                     OperationUnion Operation Operation |
+                     OperationDifference Operation Operation 
                      deriving (Show, Eq)
 
 data Condition = ConditionList ConditionUnit String Condition -- not sure if combinator needed here, string instead? -- ConditionUnit Combinator Condition

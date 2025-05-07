@@ -17,7 +17,7 @@ eval (OperationFileName fileName) = do
                                 (if validFile then (do fileContent <- readFile fileName
                                                        let fileLines = lines fileContent
                                                        let table = map (map strip . splitOn ",") fileLines
-                                                       putStr (unlines (map (intercalate ",") (sort table)))
+                                                       --putStr (unlines (map (intercalate ",") (sort table)))
 
                                                        let arityList = map length table
                                                        let firstArity = head arityList
@@ -49,6 +49,22 @@ eval (OperationCartesian operation1 operation2) = do
                                 table2 <- eval operation2
                                 let appliedCartesian = [row1 ++ row2 | row1 <- table1, row2 <- table2]
                                 return appliedCartesian
+eval (OperationUnion operation1 operation2) = do
+                                table1 <- eval operation1
+                                table2 <- eval operation2
+                                let table1Arity = length (head table1)
+                                let table2Arity = length (head table2)
+                                (if table1Arity == table2Arity then (do
+                                        let appliedUnion = table1 ++ table2
+                                        return appliedUnion) else error "Error: You are trying to perform a union on two sets of data with different arities.")
+eval (OperationDifference operation1 operation2) = do
+                                table1 <- eval operation1
+                                table2 <- eval operation2
+                                let table1Arity = length (head table1)
+                                let table2Arity = length (head table2)
+                                (if table1Arity == table2Arity then (do
+                                        let appliedDifference = filter (`notElem` table2) table1
+                                        return appliedDifference) else error "Error: You are trying to perform a difference on two sets of data with different arities.")
 eval (OperationJoin "Natural" operation1 condition operation2) = do
                                                                 table1 <- eval operation1
                                                                 table2 <- eval operation2
@@ -172,10 +188,10 @@ main = catch main' noParse
 main' :: IO ()
 main' = do (fileName : _ ) <- getArgs
            sourceText <- readFile fileName
-           putStrLn ("To parse: " ++ sourceText)
+           --putStrLn ("To parse: " ++ sourceText)
            let parsedProg = csvParser (alexScanTokens sourceText)
-           putStrLn ("Parsed: " ++ show parsedProg)
+           --putStrLn ("Parsed: " ++ show parsedProg)
            result <- eval parsedProg
            let csvFormattedOutput = unlines (map (intercalate ",") (sort result))
-           putStrLn "Evaluated:"
+           --putStrLn "Evaluated:"
            putStr csvFormattedOutput

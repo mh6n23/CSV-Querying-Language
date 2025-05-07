@@ -1,1 +1,1 @@
-("A.csv") X ("B.csv")
+("A.csv") - ("B.csv")

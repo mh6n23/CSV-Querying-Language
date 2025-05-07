@@ -26,15 +26,13 @@ $digit+             {\s -> TokenInt (read s)}
 "OR"                {\s -> TokenCombinator "OR"}
 "=="                {\s -> TokenOperator "Equals"}
 "!="                {\s -> TokenOperator "NotEquals"}
-"<="                {\s -> TokenOperator "LessThanOrEqualTo"}
-">="                {\s -> TokenOperator "GreaterThanOrEqualTo"}
-"<"                 {\s -> TokenOperator "LessThan"}
-">"                 {\s -> TokenOperator "GreaterThan"}
 "->"                {\s -> TokenArrow}
 "NaturalJoin"       {\s -> TokenJoinType "Natural"}
 "SemiJoin"          {\s -> TokenJoinType "Semi"}
 "LeftJoin"          {\s -> TokenJoinType "Left"}
 "SAVE"              {\s -> TokenSave}
+"UNION"             {\s -> TokenUnion}
+"-"                 {\s -> TokenDifference}
 \"[^\"]*\"          {\s -> TokenQuotedString (init (tail s))}
 
 {
@@ -59,6 +57,8 @@ $digit+             {\s -> TokenInt (read s)}
         TokenQuotedString String|
         TokenString String      |
         TokenJoinType String    |
-        TokenSave
+        TokenSave               |
+        TokenUnion              |
+        TokenDifference
         deriving (Eq, Show)
 }
