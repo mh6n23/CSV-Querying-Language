@@ -5,7 +5,7 @@ import System.IO
 import Data.List.Split
 import System.Environment ( getArgs )
 import Control.Exception ( catch, ErrorCall )
-import Data.List (intercalate, sort)
+import Data.List (intercalate, sort, isSuffixOf)
 import Data.String.Utils (strip)
 
 type Row = [String]
@@ -13,23 +13,24 @@ type Table = [Row]
 
 eval :: Operation -> IO Table
 eval (OperationFileName fileName) = do
-                                fileContent <- readFile fileName
-                                let fileLines = lines fileContent
-                                let table = map (map strip . splitOn ",") fileLines
-                                putStr (unlines (map (intercalate ",") (sort table)))
+                                let validFile = ".csv" `isSuffixOf` fileName
+                                (if validFile then (do fileContent <- readFile fileName
+                                                       let fileLines = lines fileContent
+                                                       let table = map (map strip . splitOn ",") fileLines
+                                                       putStr (unlines (map (intercalate ",") (sort table)))
 
-                                let arityList = map length table
-                                let firstArity = head arityList
-                                let equalArities = all (== firstArity) arityList
+                                                       let arityList = map length table
+                                                       let firstArity = head arityList
+                                                       let equalArities = all (== firstArity) arityList
 
-                                let lastLine = last fileLines
-                                let trailingNewLine = "" == lastLine
-                                let invalidTrailingNewLine = trailingNewLine && firstArity > 1
+                                                       let lastLine = last fileLines
+                                                       let trailingNewLine = "" == lastLine
+                                                       let invalidTrailingNewLine = trailingNewLine && firstArity > 1
 
-                                case (equalArities, invalidTrailingNewLine) of
-                                    (True, False) -> return table
-                                    (False, _) -> error ("Error: The CSV File " ++ fileName ++ " does not have the same arity on each row.")
-                                    (_, True) -> error ("Error: The CSV File " ++ fileName ++ " has an invalid trailing new line.")
+                                                       case (equalArities, invalidTrailingNewLine) of
+                                                        (True, False) -> return table
+                                                        (False, _) -> error ("Error: The CSV File " ++ fileName ++ " does not have the same arity on each row.")
+                                                        (_, True) -> error ("Error: The CSV File " ++ fileName ++ " has an invalid trailing new line.")) else error "Error: You entered a file name without the .csv extension")
 
 eval (OperationSelection conditionList operation) = do
                                 table <- eval operation

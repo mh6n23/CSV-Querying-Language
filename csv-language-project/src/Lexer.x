@@ -36,7 +36,6 @@ $digit+             {\s -> TokenInt (read s)}
 "LeftJoin"          {\s -> TokenJoinType "Left"}
 "SAVE"              {\s -> TokenSave}
 \"[^\"]*\"          {\s -> TokenQuotedString (init (tail s))}
-$alpha [$alpha $digit \_ \']*       { \s -> TokenString s } 
 
 {
     data Token =

@@ -30,14 +30,14 @@ import Lexer
     save                { TokenSave }
 
 %%
-operation : string dot csv {OperationFileName ($1 ++ ".csv")}
+operation : quotedstring {OperationFileName $1}
             | selection leftsquarebracket condition rightsquarebracket leftbracket operation rightbracket { OperationSelection $3 $6 }
             | replace leftsquarebracket replaceList rightsquarebracket where leftsquarebracket condition rightsquarebracket leftbracket operation rightbracket { OperationReplace $3 $7 $10 }
             | replace leftsquarebracket replaceList rightsquarebracket leftbracket operation rightbracket { OperationReplace $3 (ConditionSingle (ConditionUnitColumn 0 "Equals" 0)) $6 } 
             | projection leftsquarebracket columnList rightsquarebracket leftbracket operation rightbracket { OperationProject $3 $6}
             | join leftbracket operation rightbracket on leftsquarebracket conditionUnit rightsquarebracket leftbracket operation rightbracket { OperationJoin $1 $3 $7 $10 }
             | leftbracket operation rightbracket cartesian leftbracket operation rightbracket { OperationCartesian $2 $6 }
-            | save string dot csv leftbracket operation rightbracket { OperationSave ($2 ++ ".csv") $6 }
+            | save quotedstring leftbracket operation rightbracket { OperationSave $2 $4 }
 
 columnList : int { ColumnListSingle $1 }
                 | int comma columnList {ColumnListMultiple $1 $3}
