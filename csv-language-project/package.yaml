@@ -19,8 +19,8 @@ description: Alex and Happy project.
 dependencies:
 - base >= 4.7 && < 5
 - array
-- split # added by Matt
-- MissingH # added by Matt (used for strip function)
+- split 
+- MissingH 
 ghc-options:
 - -Wall
 - -Wcompat

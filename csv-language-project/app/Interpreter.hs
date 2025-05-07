@@ -17,7 +17,6 @@ eval (OperationFileName fileName) = do
                                 (if validFile then (do fileContent <- readFile fileName
                                                        let fileLines = lines fileContent
                                                        let table = map (map strip . splitOn ",") fileLines
-                                                       --putStr (unlines (map (intercalate ",") (sort table)))
                                                        (if null table then return [] else (do let arityList = map length table
                                                                                               let firstArity = head arityList
                                                                                               let equalArities = all (== firstArity) arityList
@@ -29,7 +28,8 @@ eval (OperationFileName fileName) = do
                                                                                               case (equalArities, invalidTrailingNewLine) of
                                                                                                   (True, False) -> return table
                                                                                                   (False, _) -> error ("Error: The CSV File " ++ fileName ++ " does not have the same arity on each row.")
-                                                                                                  (_, True) -> error ("Error: The CSV File " ++ fileName ++ " has an invalid trailing new line.")))) else error "Error: You entered a file name without the .csv extension")
+                                                                                                  (_, True) -> error ("Error: The CSV File " ++ fileName ++ " has an invalid trailing new line.")))) 
+                                    else error "Error: You entered a file name without the .csv extension")
 
 eval (OperationSelection conditionList operation) = do
                                 table <- eval operation
@@ -51,16 +51,16 @@ eval (OperationCartesian operation1 operation2) = do
 eval (OperationUnion operation1 operation2) = do
                                 table1 <- eval operation1
                                 table2 <- eval operation2
-                                let table1Arity = length (head table1)
-                                let table2Arity = length (head table2)
+                                let table1Arity = if null table1 then 0 else length (head table1)
+                                let table2Arity = if null table2 then 0 else length (head table2)
                                 (if table1Arity == table2Arity then (do
                                         let appliedUnion = table1 ++ table2
                                         return appliedUnion) else error "Error: You are trying to perform a union on two sets of data with different arities.")
 eval (OperationDifference operation1 operation2) = do
                                 table1 <- eval operation1
                                 table2 <- eval operation2
-                                let table1Arity = length (head table1)
-                                let table2Arity = length (head table2)
+                                let table1Arity = if null table1 then 0 else length (head table1)
+                                let table2Arity = if null table2 then 0 else length (head table2)
                                 (if table1Arity == table2Arity then (do
                                         let appliedDifference = filter (`notElem` table2) table1
                                         return appliedDifference) else error "Error: You are trying to perform a difference on two sets of data with different arities.")
@@ -160,7 +160,7 @@ applyLeftJoin table1 table2 (ConditionUnitColumn column1 "Equals" column2) = con
                                                                      else
                                                                         table1Row !! column1 == table2Row !! column2]
                     combinedRows = if null matchingRows then
-                         [table1Row ++ replicate (length (head table2)) " "]
+                         [table1Row ++ replicate (if null table2 then 0 else length (head table2)) " "]
                          else [table1Row ++ row2 | row2 <- matchingRows]
                 in combinedRows
     ) table1
@@ -187,10 +187,7 @@ main = catch main' noParse
 main' :: IO ()
 main' = do (fileName : _ ) <- getArgs
            sourceText <- readFile fileName
-           --putStrLn ("To parse: " ++ sourceText)
            let parsedProg = csvParser (alexScanTokens sourceText)
-           --putStrLn ("Parsed: " ++ show parsedProg)
            result <- eval parsedProg
            let csvFormattedOutput = unlines (map (intercalate ",") (sort result))
-           --putStrLn "Evaluated:"
            putStr csvFormattedOutput
