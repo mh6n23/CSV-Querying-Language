@@ -1,0 +1,1 @@
+PROJECT [2,3] (SELECT [0 == 1 AND 4 == 5] (("S.csv") X ("T.csv")))
